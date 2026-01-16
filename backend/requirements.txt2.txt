@@ -1,5 +1,0 @@
-Flask==2.3.3
-Flask-SQLAlchemy==3.1.1
-Flask-Migrate==4.0.5
-PyJWT==2.8.0
-reportlab==4.1.0
