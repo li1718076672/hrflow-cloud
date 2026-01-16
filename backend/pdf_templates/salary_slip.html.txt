@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>工资条 - {{ emp.name }}</title>
+  <style>
+    body {
+      font-family: "SimSun", "宋体", serif;
+      margin: 2cm;
+      color: #333;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #666;
+      margin-top: 5px;
+    }
+    .info {
+      margin: 15px 0;
+      line-height: 1.8;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #000;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: normal;
+    }
+    .amount {
+      text-align: right !important;
+      font-family: Arial, sans-serif;
+    }
+    .total-row {
+      font-weight: bold;
+    }
+    .footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #888;
+      text-align: center;
+    }
+    @media print {
+      @page { margin: 2cm; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="title">{{ company_name }} 工资条</div>
+  <div class="subtitle">{{ issue_date }}</div>
+</div>
+
+<div class="info">
+  <strong>姓　名：</strong>{{ emp.name }} &nbsp;&nbsp;&nbsp;
+  <strong>工　号：</strong>{{ emp.employee_id }}<br>
+  <strong>部　门：</strong>{{ emp.department or '未设置' }} &nbsp;&nbsp;&nbsp;
+  <strong>所属月份：</strong>{{ month_year }}
+</div>
+
+<h4>收入明细</h4>
+<table>
+  <tr><th>项目</th><th class="amount">金额（元）</th></tr>
+  <tr><td>基本工资</td><td class="amount">{{ "%.2f"|format(salary.basic_salary) }}</td></tr>
+  {% if salary.overtime_pay_g1 > 0 %}
+  <tr><td>加班费(G1)</td><td class="amount">{{ "%.2f"|format(salary.overtime_pay_g1) }}</td></tr>
+  {% endif %}
+  {% if salary.overtime_pay_g2 > 0 %}
+  <tr><td>加班费(G2)</td><td class="amount">{{ "%.2f"|format(salary.overtime_pay_g2) }}</td></tr>
+  {% endif %}
+  {% if salary.overtime_pay_g3 > 0 %}
+  <tr><td>加班费(G3)</td><td class="amount">{{ "%.2f"|format(salary.overtime_pay_g3) }}</td></tr>
+  {% endif %}
+  {% if salary.allowance > 0 %}
+  <tr><td>津贴</td><td class="amount">{{ "%.2f"|format(salary.allowance) }}</td></tr>
+  {% endif %}
+  {% if salary.tech_allowance > 0 %}
+  <tr><td>技术补贴</td><td class="amount">{{ "%.2f"|format(salary.tech_allowance) }}</td></tr>
+  {% endif %}
+  {% if salary.meal_allowance > 0 %}
+  <tr><td>餐补</td><td class="amount">{{ "%.2f"|format(salary.meal_allowance) }}</td></tr>
+  {% endif %}
+  {% if salary.housing_allowance > 0 %}
+  <tr><td>房补</td><td class="amount">{{ "%.2f"|format(salary.housing_allowance) }}</td></tr>
+  {% endif %}
+  {% if salary.full_attendance_bonus > 0 %}
+  <tr><td>全勤奖</td><td class="amount">{{ "%.2f"|format(salary.full_attendance_bonus) }}</td></tr>
+  {% endif %}
+  {% if salary.performance_bonus > 0 %}
+  <tr><td>绩效奖金</td><td class="amount">{{ "%.2f"|format(salary.performance_bonus) }}</td></tr>
+  {% endif %}
+  <tr class="total-row"><td>应发合计</td><td class="amount">{{ "%.2f"|format(salary.total_earnings) }}</td></tr>
+</table>
+
+<h4>扣款明细</h4>
+<table>
+  <tr><th>项目</th><th class="amount">金额（元）</th></tr>
+  {% if salary.social_security > 0 %}
+  <tr><td>社保个人缴纳</td><td class="amount">{{ "%.2f"|format(salary.social_security) }}</td></tr>
+  {% endif %}
+  {% if salary.housing_fund > 0 %}
+  <tr><td>公积金个人部分</td><td class="amount">{{ "%.2f"|format(salary.housing_fund) }}</td></tr>
+  {% endif %}
+  {% if salary.tax > 0 %}
+  <tr><td>个税</td><td class="amount">{{ "%.2f"|format(salary.tax) }}</td></tr>
+  {% endif %}
+  <tr class="total-row"><td>总扣除</td><td class="amount">{{ "%.2f"|format(salary.total_deductions) }}</td></tr>
+</table>
+
+<h4 style="text-align: right;">实发工资：<span style="font-size: 18px;">¥ {{ "%.2f"|format(salary.net_salary) }}</span></h4>
+
+<div class="footer">
+  注：本工资条由 HRFlow Cloud 系统自动生成，仅作参考。如有异议，请及时反馈。
+</div>
+
+</body>
+</html>
